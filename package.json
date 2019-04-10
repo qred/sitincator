@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development electron .",
-    "start-prod": "NODE_ENV=production ./node_modules/.bin/electron .",
+    "start": "NODE_ENV=development node -r dotenv/config node_modules/.bin/electron .",
+    "start-prod": "NODE_ENV=production electron .",
     "build-dev": "node_modules/.bin/webpack",
     "build": "NODE_ENV=production node_modules/.bin/webpack -p --config webpack.prod.config.js",
     "watch": "./node_modules/.bin/webpack-dev-server --hot --inline",

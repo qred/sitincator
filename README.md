@@ -47,9 +47,9 @@ Node requirement: `v6`
     cd sitincator
     npm install
 
-Follow the instructions above (`Installation on the Raspberry Pi -> Configuration`). 
+Follow the instructions above (`Installation on the Raspberry Pi -> Configuration`).
 
-Start webpack (note that this process is blocking, you could also start it in the background): 
+Start webpack (note that this process is blocking, you could also start it in the background):
 
     npm run watch
 
@@ -86,7 +86,7 @@ Create a script `start_meeting_room_app` using the following command to start Si
     DISPLAY=":0" xset s off
     DISPLAY=":0" xset -dpms
     DISPLAY=":0" xset s noblank
-    
+
     cd /home/pi/Sitincator/
     DISPLAY=":0" /home/pi/Sitincator/Sitincator --disable-pinch
     EOF
@@ -116,5 +116,15 @@ To save some power, add the following cronjobs to automatically turn the display
     EOF
     chmod +x /home/pi/display_turn_off
 
-[1]: https://developers.google.com/google-apps/calendar/quickstart/nodejs#step_1_turn_on_the_api_name
+## Environment variables
 
+- `GOOGLE_APPLICATION_CREDENTIALS` - Path to your `credentials.json` file.
+- `SITINCATOR_CALENDAR_ID` - Resource ID of the calendar/room
+- `SITINCATOR_ROOM_NAME` - Custom room name (optional)
+
+### Development
+
+When developing the environment variables are read from `.env` in the project root folder.
+
+
+[1]: https://developers.google.com/google-apps/calendar/quickstart/nodejs#step_1_turn_on_the_api_name

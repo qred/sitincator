@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 const { google } = require('googleapis');
@@ -97,13 +95,13 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-    const gcalApi = new gcal.GCal(process.env.CALENDAR_ID);
+    const gcalApi = new gcal.GCal(process.env.SITINCATOR_CALENDAR_ID);
 
     gcalApi.authorize()
       .then(client => {
         createWindow();
 
-        global.calendarName = process.env.ROOM_NAME;
+        global.calendarName = process.env.SITINCATOR_ROOM_NAME;
 
         ipcMain.on('calendar:list-events', event => client.listEvents()
           .then(items => event.sender.send('calendar:list-events-success', items))

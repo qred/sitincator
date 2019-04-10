@@ -51,5 +51,6 @@ credentials/*
 config/*.json
 
 Sitincator-linux-armv7l
+Sitincator-darwin-x64
 
 *.swp

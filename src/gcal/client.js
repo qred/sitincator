@@ -1,4 +1,4 @@
-const google = require('googleapis');
+const { google } = require('googleapis');
 
 let _auth, _calendarId;
 const calendar = google.calendar('v3');
@@ -11,25 +11,19 @@ module.exports = class Client {
     _auth = auth;
   }
 
-  listEvents() {
+  async listEvents() {
     const timeMin = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
     const timeMax = new Date(new Date().setHours(23, 59, 59)).toISOString();
-    return new Promise((resolve, reject) => {
-      calendar.events.list({
-        auth: _auth,
-        calendarId: _calendarId,
-        timeMin,
-        timeMax,
-        singleEvents: true,
-        orderBy: 'startTime'
-      }, (err, response) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(response.items);
-        }
-      });
-    });
+    const response = await calendar.events.list({
+      auth: _auth,
+      calendarId: _calendarId,
+      timeMin,
+      timeMax,
+      singleEvents: true,
+      orderBy: 'startTime'
+    })
+
+    return response.data.items
   }
 
   insertEvent(duration = 15) {

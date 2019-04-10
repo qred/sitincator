@@ -1,6 +1,8 @@
+require('dotenv').config()
+
 const { app, BrowserWindow, ipcMain } = require('electron');
 
-const google = require('googleapis');
+const { google } = require('googleapis');
 const gcal = require('./src/gcal');
 const fs = require('fs');
 const readline = require('readline');
@@ -95,44 +97,38 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-  readConfiguration()
-    .then(configuration => {
-      const gcalApi = new gcal.GCal(configuration.calendar_id);
+    const gcalApi = new gcal.GCal(process.env.CALENDAR_ID);
 
-      gcalApi.authorize()
-        .then(client => {
-          createWindow();
+    gcalApi.authorize()
+      .then(client => {
+        createWindow();
 
-          global.calendarName = configuration.title;
+        global.calendarName = process.env.ROOM_NAME;
 
-          ipcMain.on('calendar:list-events', event => client.listEvents()
-            .then(items => event.sender.send('calendar:list-events-success', items))
-            .catch(error => event.sender.send('calendar:list-events-failure', error))
-          );
+        ipcMain.on('calendar:list-events', event => client.listEvents()
+          .then(items => event.sender.send('calendar:list-events-success', items))
+          .catch(error => event.sender.send('calendar:list-events-failure', error))
+        );
 
-          ipcMain.on('calendar:status-event', event => client.statusEvent()
-            .then(item => event.sender.send('calendar:status-event-success', item))
-            .catch(error => event.sender.send('calendar:status-event-failure', error))
-          );
+        ipcMain.on('calendar:status-event', event => client.statusEvent()
+          .then(item => event.sender.send('calendar:status-event-success', item))
+          .catch(error => event.sender.send('calendar:status-event-failure', error))
+        );
 
-          ipcMain.on('calendar:quick-reservation', (event, duration) => {
-            client.insertEvent(duration)
-              .then(response => event.sender.send('calendar:quick-reservation-success', response))
-              .catch(error => event.sender.send('calendar:quick-reservation-failure', error));
-            }
-          );
+        ipcMain.on('calendar:quick-reservation', (event, duration) => {
+          client.insertEvent(duration)
+            .then(response => event.sender.send('calendar:quick-reservation-success', response))
+            .catch(error => event.sender.send('calendar:quick-reservation-failure', error));
+          }
+        );
 
-          ipcMain.on('calendar:finish-reservation', (event, eventId) => {
-            client.finishEvent(eventId)
-              .then(response => event.sender.send('calendar:finish-reservation-success', response))
-              .catch(error => event.sender.send('calendar:finish-reservation-failure', error));
-          });
-        })
-        .catch(() => process.exit());
-    }).catch(error => {
-      console.log(error);
-      process.exit();
-    });
+        ipcMain.on('calendar:finish-reservation', (event, eventId) => {
+          client.finishEvent(eventId)
+            .then(response => event.sender.send('calendar:finish-reservation-success', response))
+            .catch(error => event.sender.send('calendar:finish-reservation-failure', error));
+        });
+      })
+      .catch(() => process.exit());
 });
 
 // Quit when all windows are closed.
@@ -151,4 +147,3 @@ app.on('activate', () => {
     createWindow();
   }
 })
-

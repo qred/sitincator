@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const google = require('googleapis');
-const googleAuth = require('google-auth-library');
+const { google } = require('googleapis');
 const Client = require('./client');
 
 const CREDENTIALS_DIR = path.resolve(__dirname, '../../credentials');
@@ -117,20 +116,15 @@ exports.GCal = class GCal {
     _calendarId = calendarId;
   }
 
-  authorize() {
-    return readCredentials().then(credentials => {
-      const clientSecret = credentials.installed.client_secret;
-      const clientId = credentials.installed.client_id;
-      const redirectUrl = credentials.installed.redirect_uris[0];
-      const auth = new googleAuth();
-      const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-      return readOauth2Token(oauth2Client).then(token => {
-        oauth2Client.credentials = token;
-        return new Client(_calendarId, oauth2Client);
-      });
-    }).catch(function(error) {
-      console.log(error);
-      exit(1);
+  async authorize() {
+    const auth = await google.auth.getClient({
+      scopes: 'https://www.googleapis.com/auth/calendar'
     });
+
+    google.options({
+      auth: auth
+    })
+
+    return new Client(_calendarId, auth)
   }
 };

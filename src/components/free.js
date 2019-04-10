@@ -23,7 +23,7 @@ const Free = ({ nextEvent, onClick15, onClick30}) => {
   return (
     <div className='status-details' key={1}>
       <strong> { remote.getGlobal('calendarName') }</strong>
-      <h3>Quick Booking</h3>
+      {/* <h3>Quick Booking</h3>
       <div className="action-buttons multiple">
         <Button
           icon="15-min"
@@ -35,7 +35,7 @@ const Free = ({ nextEvent, onClick15, onClick30}) => {
           handleClick={onClick30}
           className={lessThan30MinutesToEvent(nextEvent) ? 'hidden' : '' }
         />
-      </div>
+      </div> */}
       <h1>{"It's free"}</h1>
       <h2>{remainingTimeMessage}</h2>
     </div>
